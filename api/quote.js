@@ -9,9 +9,14 @@ export default async function handler(req, res) {
   const url = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${encoded}`;
 
   try {
-    const response = await fetch(url);
-    const data = await response.json();
+    const response = await fetch(url, {
+      headers: {
+        "User-Agent": "Mozilla/5.0",
+        "Accept": "application/json"
+      }
+    });
 
+    const data = await response.json();
     const quote = data?.quoteResponse?.result?.[0];
 
     res.setHeader("Access-Control-Allow-Origin", "*");
