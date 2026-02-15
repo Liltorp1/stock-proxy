@@ -10,10 +10,16 @@ export default async function handler(req, res) {
   try {
     const response = await fetch(url);
     const data = await response.json();
-    const quote = data.quoteResponse?.result?.[0];
+
+    const quote = data?.quoteResponse?.result?.[0];
 
     res.setHeader("Access-Control-Allow-Origin", "*");
-    res.status(200).json(quote || { error: "No data for ticker" });
+
+    if (!quote) {
+      return res.status(404).json({ error: "No data for ticker" });
+    }
+
+    res.status(200).json(quote);
   } catch (err) {
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.status(500).json({ error: "Failed to fetch price" });
