@@ -5,9 +5,9 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: "Missing ticker parameter" });
   }
 
-  const apiKey = "d692ur1r01qs7u9kihegd692ur1r01qs7u9kihf0";
+  const apiKey = "f4faaf5fc1f149eeb9364b8065b8298b";
   const encoded = encodeURIComponent(ticker);
-  const url = `https://finnhub.io/api/v1/quote?symbol=${encoded}&token=${apiKey}`;
+  const url = `https://api.twelvedata.com/quote?symbol=${encoded}&apikey=${apiKey}`;
 
   try {
     const response = await fetch(url);
@@ -15,9 +15,9 @@ export default async function handler(req, res) {
 
     res.setHeader("Access-Control-Allow-Origin", "*");
 
-    // Finnhub returns c = current price
-    if (!data || data.c === 0) {
-      return res.status(404).json({ error: "No data for ticker", ticker });
+    // TwelveData returns an error object with "code" when something is wrong
+    if (!data || data.code) {
+      return res.status(404).json({ error: data.message || "No data for ticker", ticker });
     }
 
     res.status(200).json(data);
